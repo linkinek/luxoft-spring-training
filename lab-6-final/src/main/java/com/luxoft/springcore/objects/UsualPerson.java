@@ -1,25 +1,41 @@
 package com.luxoft.springcore.objects;
 
+import com.luxoft.springcore.ContextManager;
+import com.luxoft.springcore.events.TravelEvent;
+import com.luxoft.springcore.travel.Connection;
+import com.luxoft.springcore.travel.TravellingOpportunities;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
 public class UsualPerson implements Person {
     private int id;
 
     private String name;
     private City city;
     private int distanceTravelled = 0;
-    
-	private int age;
-	private boolean isProgrammer;
-    
+
+    private int age;
+    private boolean isProgrammer;
+
+    @Autowired
+    private ContextManager contextManager;
+    @Autowired
+    private TravellingOpportunities travellingOpportunities;
+
+    public UsualPerson() {
+    }
+
     public UsualPerson(String name, int age, City city) {
-    	this.name = name;
-    	this.age = age;
-    	this.city = city;
+        this.name = name;
+        this.age = age;
+        this.city = city;
     }
 
     public int getAge() {
-		return age;
-	}
-    
+        return age;
+    }
+
     public void setAge(int age) {
         this.age = age;
     }
@@ -39,14 +55,14 @@ public class UsualPerson implements Person {
     public void setCountry(City city) {
         this.city = city;
     }
-    
+
     public int getDistanceTravelled() {
-		return distanceTravelled;
-	}
-    
+        return distanceTravelled;
+    }
+
     public void setDistanceTravelled(int distanceTravelled) {
-		this.distanceTravelled = distanceTravelled;
-	}
+        this.distanceTravelled = distanceTravelled;
+    }
 
     public boolean isProgrammer() {
         return isProgrammer;
@@ -64,10 +80,19 @@ public class UsualPerson implements Person {
     public void setId(int id) {
         this.id = id;
     }
-    
-    
+
+
     public void travel(City source, City destination) {
-    	
+        Connection connection = travellingOpportunities.getConnectionsList()
+                .stream().filter(con -> con.getSource() != null)
+                .filter(conn -> conn.getSource().equals(source) &&
+                        conn.getDestination().equals(destination))
+                .findFirst().get();
+
+        setDistanceTravelled(getDistanceTravelled() + connection.getDistance());
+
+        TravelEvent travelEvent = new TravelEvent(this, destination);
+        contextManager.getApplicationContext().publishEvent(travelEvent);
     }
 
     public String toString() {

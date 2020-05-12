@@ -1,8 +1,11 @@
 package com.luxoft.springcore.objects;
 
 
+import org.springframework.stereotype.Component;
+
 import java.io.Serializable;
 
+@Component
 public class Country implements Serializable{
 
 	private static final long serialVersionUID = 1L;

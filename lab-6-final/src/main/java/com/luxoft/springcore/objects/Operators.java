@@ -1,5 +1,8 @@
 package com.luxoft.springcore.objects;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class Operators {
 	
 	private boolean ageComparisonTest;

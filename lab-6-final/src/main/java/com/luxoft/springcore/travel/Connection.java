@@ -1,40 +1,45 @@
 package com.luxoft.springcore.travel;
 
 import com.luxoft.springcore.objects.City;
+import org.springframework.stereotype.Component;
 
+@Component
 public class Connection {
 
-	private City source;
-	private City destination;
-	private int distance;
-	
+    private City source;
+    private City destination;
+    private int distance;
+
+	public Connection() {
+	}
+
 	public Connection(City source, City destination, int distance) {
-		this.source = source;
-		this.destination = destination;
-		this.distance = distance;
-	}
+        this.source = source;
+        this.destination = destination;
+        this.distance = distance;
+    }
 
-	public City getSource() {
-		return source;
-	}
+    public City getSource() {
+        return source;
+    }
 
-	public void setSource(City source) {
-		this.source = source;
-	}
+    public void setSource(City source) {
+        this.source = source;
+    }
 
-	public City getDestination() {
-		return destination;
-	}
+    public City getDestination() {
+        return destination;
+    }
 
-	public void setDestination(City destination) {
-		this.destination = destination;
-	}
+    public void setDestination(City destination) {
+        this.destination = destination;
+    }
 
-	public int getDistance() {
-		return distance;
-	}
+    public int getDistance() {
+        return distance;
+    }
 
-	public void setDistance(int distance) {
-		this.distance = distance;
-	}
+    public void setDistance(int distance) {
+        this.distance = distance;
+    }
 }
