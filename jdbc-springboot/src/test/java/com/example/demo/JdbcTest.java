@@ -17,7 +17,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-@Sql({"/schema.sql"})
+@Sql({"/schema.sql", "/data.sql"})
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class JdbcTest {
@@ -32,14 +32,14 @@ public class JdbcTest {
     @Before
     public void setUp() throws Exception {
         initExpectedCountryLists();
-        countryDao.loadCountries();
+//        countryDao.loadCountries();
     }
 
 
     @Test
     @DirtiesContext
     public void testCountryList() {
-        List<Country> countryList = countryDao.getCountryList();
+        List<Country> countryList = (List<Country>) countryDao.findAll();
         assertNotNull(countryList);
         assertEquals(expectedCountryList.size(), countryList.size());
         for (int i = 0; i < expectedCountryList.size(); i++) {
@@ -50,7 +50,7 @@ public class JdbcTest {
     @Test
     @DirtiesContext
     public void testCountryListStartsWithA() {
-        List<Country> countryList = countryDao.getCountryListStartWith("A");
+        List<Country> countryList = (List<Country>) countryDao.findByNameStartsWith("A");
         assertNotNull(countryList);
         assertEquals(expectedCountryListStartsWithA.size(), countryList.size());
         for (int i = 0; i < expectedCountryListStartsWithA.size(); i++) {
@@ -62,7 +62,7 @@ public class JdbcTest {
     @DirtiesContext
     public void testCountryChange() {
         countryDao.updateCountryName("RU", "Russia");
-        assertEquals(countryWithChangedName, countryDao.getCountryByCodeName("RU"));
+        assertEquals(countryWithChangedName, countryDao.findFirstByCodeName("RU"));
     }
 
     private void initExpectedCountryLists() {

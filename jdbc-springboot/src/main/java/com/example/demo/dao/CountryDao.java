@@ -1,26 +1,13 @@
 package com.example.demo.dao;
 
 import com.example.demo.model.Country;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
-@Repository
-public class CountryDao {
-    private static final String LOAD_COUNTRIES_SQL = "insert into country (name, code_name) values ";
-
-    private static final String GET_ALL_COUNTRIES_SQL = "select * from country";
-    private static final String GET_COUNTRIES_BY_NAME_SQL = "select * from country where name like :name";
-    private static final String GET_COUNTRY_BY_NAME_SQL = "select * from country where name = '";
-    private static final String GET_COUNTRY_BY_CODE_NAME_SQL = "select * from country where code_name = '";
-
-    private static final String UPDATE_COUNTRY_NAME_SQL_1 = "update country SET name='";
-    private static final String UPDATE_COUNTRY_NAME_SQL_2 = " where code_name='";
+public interface CountryDao extends CrudRepository<Country, Integer> {
 
     public static final String[][] COUNTRY_INIT_DATA = {{"Australia", "AU"},
             {"Canada", "CA"}, {"France", "FR"}, {"Hong Kong", "HK"},
@@ -29,56 +16,14 @@ public class CountryDao {
             {"Switzerland", "CH"}, {"United Kingdom", "GB"},
             {"United States", "US"}};
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    Iterable<Country> findByNameStartsWith(String name);
 
-    private static final CountryRowMapper COUNTRY_ROW_MAPPER = new CountryRowMapper();
+    Country findFirstByCodeName(String codeName);
 
-    public List<Country> getCountryList() {
-        List<Country> countryList = jdbcTemplate.query(
-                GET_ALL_COUNTRIES_SQL, COUNTRY_ROW_MAPPER);
+    Country findByName(String name);
 
-        return countryList;
-    }
-
-    public List<Country> getCountryListStartWith(String name) {
-        NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(
-                jdbcTemplate.getDataSource());
-        SqlParameterSource sqlParameterSource = new MapSqlParameterSource(
-                "name", name + "%");
-        return namedParameterJdbcTemplate.query(GET_COUNTRIES_BY_NAME_SQL,
-                sqlParameterSource, COUNTRY_ROW_MAPPER);
-    }
-
-    public void updateCountryName(String codeName, String newCountryName) {
-        jdbcTemplate.execute(
-                UPDATE_COUNTRY_NAME_SQL_1 + newCountryName + "'"
-                        + UPDATE_COUNTRY_NAME_SQL_2 + codeName + "'");
-    }
-
-    public void loadCountries() {
-        for (String[] countryData : COUNTRY_INIT_DATA) {
-            String sql = LOAD_COUNTRIES_SQL + "('" + countryData[0] + "', '"
-                    + countryData[1] + "');";
-//			System.out.println(sql);
-            jdbcTemplate.execute(sql);
-        }
-    }
-
-    public Country getCountryByCodeName(String codeName) {
-        String sql = GET_COUNTRY_BY_CODE_NAME_SQL + codeName + "'";
-//		System.out.println(sql);
-
-        return jdbcTemplate.query(sql, COUNTRY_ROW_MAPPER).get(0);
-    }
-
-    public Country getCountryByName(String name)
-            throws CountryNotFoundException {
-        List<Country> countryList = jdbcTemplate.query(GET_COUNTRY_BY_NAME_SQL
-                + name + "'", COUNTRY_ROW_MAPPER);
-        if (countryList.isEmpty()) {
-            throw new CountryNotFoundException();
-        }
-        return countryList.get(0);
-    }
+    @Transactional
+    @Modifying
+    @Query("update Country set name = :newCountryName where codeName = :codeName")
+    void updateCountryName(@Param("codeName") String codeName, @Param("newCountryName") String newCountryName);
 }

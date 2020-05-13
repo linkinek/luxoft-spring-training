@@ -1,12 +1,18 @@
 package com.example.demo.model;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.io.Serializable;
 
-public class Country implements Serializable{
+@Entity
+public class Country implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private int id;
+    @Id
+    @GeneratedValue
+    private int id;
 
     private String name;
 

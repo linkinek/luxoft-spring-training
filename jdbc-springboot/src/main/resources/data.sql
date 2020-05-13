@@ -1,0 +1,12 @@
+insert into country(id, name, code_name) values (1, 'Australia', 'AU');
+insert into country(id, name, code_name) values (2, 'Canada', 'CA');
+insert into country(id, name, code_name) values (3, 'France', 'FR');
+insert into country(id, name, code_name) values (4, 'Hong Kong', 'HK');
+insert into country(id, name, code_name) values (5, 'Iceland', 'IC');
+insert into country(id, name, code_name) values (6, 'Japan', 'JP');
+insert into country(id, name, code_name) values (7, 'Nepal', 'NP');
+insert into country(id, name, code_name) values (8, 'Russian Federation', 'RU');
+insert into country(id, name, code_name) values (9, 'Sweden', 'SE');
+insert into country(id, name, code_name) values (10, 'Switzerland', 'CH');
+insert into country(id, name, code_name) values (11, 'United Kingdom', 'GB');
+insert into country(id, name, code_name) values (12, 'United States', 'US');
