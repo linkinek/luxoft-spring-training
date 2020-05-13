@@ -1,25 +1,27 @@
 package com.luxoft.springdb.lab3.service;
 
-import org.springframework.transaction.support.TransactionTemplate;
-
 import com.luxoft.springdb.lab3.dao.CountryDao;
 import com.luxoft.springdb.lab3.dao.CountryNotFoundException;
 import com.luxoft.springdb.lab3.model.Country;
-
-import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.List;
 
+@Repository
 public class ProgrammaticTransactionCountryServiceImpl implements ProgrammaticTransactionCountryService {
     private TransactionTemplate transactionTemplate;
     private CountryDao dao;
 
-    public ProgrammaticTransactionCountryServiceImpl(PlatformTransactionManager transactionManager) {
+    public ProgrammaticTransactionCountryServiceImpl(PlatformTransactionManager transactionManager,
+                                                     CountryDao countryDao) {
         this.transactionTemplate = new TransactionTemplate(transactionManager);
+        this.dao = countryDao;
     }
 
     public Country getCountryByName(final String name) {
